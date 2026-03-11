@@ -2,24 +2,31 @@ import pandas as pd
 import joblib
 
 from pothole_detection import PotholeDetector
-
 from pathlib import Path
 
+
+# -----------------------------
+# Paths
+# -----------------------------
+
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+DATASET_PATH = BASE_DIR / "Data" / "synthetic_pothole_dataset.csv"
 MODEL_PATH = BASE_DIR / "Data" / "pothole_ai_model.pkl"
+
 
 # -----------------------------
 # Load dataset
 # -----------------------------
 
-data = pd.read_csv(BASE_DIR / "Data" / "synthetic_pothole_dataset.csv")
+data = pd.read_csv(DATASET_PATH)
 
 
 # -----------------------------
 # Load trained AI model
 # -----------------------------
 
-ai_model = joblib.load(BASE_DIR  / "Data" / "pothole_ai_model.pkl")
+ai_model = joblib.load(MODEL_PATH)
 
 
 # -----------------------------
@@ -41,10 +48,18 @@ print("\nRunning pothole detection with AI filtering...\n")
 
 
 # -----------------------------
+# Run AI predictions ONCE
+# -----------------------------
+
+X = data[["ax", "ay", "az", "gx", "gy", "gz", "speed"]]
+predictions = ai_model.predict(X)
+
+
+# -----------------------------
 # Process dataset
 # -----------------------------
 
-for _, row in data.iterrows():
+for i, row in data.iterrows():
 
     result = detector.process_sample(
         timestamp=row["timestamp"],
@@ -57,23 +72,16 @@ for _, row in data.iterrows():
         speed=row["speed"]
     )
 
+    prediction = predictions[i]
+    actual = row["label"]
+
+    # -----------------------------
     # Physics detection
+    # -----------------------------
+
     if result["pothole_detected"]:
 
         physics_detections += 1
-
-        # AI input features
-        features = pd.DataFrame([{
-            "ax": row["ax"],
-            "ay": row["ay"],
-            "az": row["az"],
-            "gx": row["gx"],
-            "gy": row["gy"],
-            "gz": row["gz"],
-            "speed": row["speed"]
-        }])
-
-        prediction = ai_model.predict(features)[0]
 
         if prediction == 1:
 
@@ -83,23 +91,10 @@ for _, row in data.iterrows():
             print(result)
             print()
 
+
     # -----------------------------
     # Evaluation metrics
     # -----------------------------
-
-    actual = row["label"]
-
-    features = pd.DataFrame([{
-        "ax": row["ax"],
-        "ay": row["ay"],
-        "az": row["az"],
-        "gx": row["gx"],
-        "gy": row["gy"],
-        "gz": row["gz"],
-        "speed": row["speed"]
-    }])
-
-    prediction = ai_model.predict(features)[0]
 
     if prediction == 1 and actual == 1:
         true_positives += 1
