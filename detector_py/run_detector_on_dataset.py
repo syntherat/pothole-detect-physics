@@ -8,14 +8,14 @@ from pothole_detection import PotholeDetector
 # Load dataset
 # -----------------------------
 
-data = pd.read_csv("synthetic_pothole_dataset.csv")
+data = pd.read_csv("E:\EPICS\Code\Data\synthetic_pothole_dataset.csv")
 
 
 # -----------------------------
 # Load trained AI model
 # -----------------------------
 
-ai_model = joblib.load("pothole_ai_model.pkl")
+ai_model = joblib.load("E:\EPICS\Code\Data\pothole_ai_model.pkl")
 
 
 # -----------------------------
