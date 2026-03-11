@@ -1,6 +1,11 @@
 import numpy as np
 import pandas as pd
 
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+
+
 # Constants
 g = 9.81
 sampling_rate = 400
@@ -58,7 +63,7 @@ data = pd.DataFrame({
 })
 
 # Save dataset
-data.to_csv("E:/EPICS/Code/Data/synthetic_pothole_dataset.csv", index=False)
+data.to_csv(BASE_DIR / "Data" / "synthetic_pothole_dataset.csv", index=False)
 
 print("Dataset generated successfully!")
 print("Total samples:", samples)

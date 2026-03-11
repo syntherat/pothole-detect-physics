@@ -3,19 +3,23 @@ import joblib
 
 from pothole_detection import PotholeDetector
 
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+MODEL_PATH = BASE_DIR / "Data" / "pothole_ai_model.pkl"
 
 # -----------------------------
 # Load dataset
 # -----------------------------
 
-data = pd.read_csv("E:\EPICS\Code\Data\synthetic_pothole_dataset.csv")
+data = pd.read_csv(BASE_DIR / "Data" / "synthetic_pothole_dataset.csv")
 
 
 # -----------------------------
 # Load trained AI model
 # -----------------------------
 
-ai_model = joblib.load("E:\EPICS\Code\Data\pothole_ai_model.pkl")
+ai_model = joblib.load(BASE_DIR  / "Data" / "pothole_ai_model.pkl")
 
 
 # -----------------------------

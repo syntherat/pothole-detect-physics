@@ -4,8 +4,14 @@ from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import classification_report
 
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent.parent
+MODEL_PATH = BASE_DIR / "Data" / "pothole_ai_model.pkl"
+
+
 # Load dataset
-data = pd.read_csv("synthetic_pothole_dataset.csv")
+data = pd.read_csv(BASE_DIR / "Data" / "synthetic_pothole_dataset.csv")
 
 # Features used for AI
 X = data[[
@@ -31,7 +37,7 @@ model = RandomForestClassifier(n_estimators=100)
 
 model.fit(X_train, y_train)
 
-joblib.dump(model, "pothole_ai_model.pkl")
+joblib.dump(model, MODEL_PATH)
 # Evaluate model
 predictions = model.predict(X_test)
 
