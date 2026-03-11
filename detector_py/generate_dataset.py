@@ -12,7 +12,7 @@ sampling_rate = 400
 dt = 1 / sampling_rate
 
 # Total simulation time
-total_time = 20
+total_time = 200
 samples = int(total_time * sampling_rate)
 
 timestamps = np.arange(0, total_time, dt)
@@ -32,7 +32,7 @@ speed = np.random.uniform(10, 18, samples)
 labels = np.zeros(samples)
 
 # Insert pothole events
-num_potholes = 6
+num_potholes = 1200
 
 for _ in range(num_potholes):
 
