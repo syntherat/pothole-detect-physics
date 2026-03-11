@@ -1,5 +1,6 @@
 import pandas as pd
 import joblib
+import matplotlib.pyplot as plt
 
 from pothole_detection import PotholeDetector
 from pathlib import Path
@@ -44,6 +45,8 @@ false_positives = 0
 false_negatives = 0
 
 
+detected_times = []
+
 print("\nRunning pothole detection with AI filtering...\n")
 
 
@@ -75,6 +78,7 @@ for i, row in data.iterrows():
     prediction = predictions[i]
     actual = row["label"]
 
+
     # -----------------------------
     # Physics detection
     # -----------------------------
@@ -86,6 +90,7 @@ for i, row in data.iterrows():
         if prediction == 1:
 
             ai_confirmed_detections += 1
+            detected_times.append(row["timestamp"])
 
             print("Pothole confirmed at time:", row["timestamp"])
             print(result)
@@ -110,7 +115,8 @@ for i, row in data.iterrows():
 # Accuracy calculation
 # -----------------------------
 
-accuracy = true_positives / (true_positives + false_positives + false_negatives)
+total = true_positives + false_positives + false_negatives
+accuracy = true_positives / total if total > 0 else 0
 
 
 # -----------------------------
@@ -128,4 +134,23 @@ print("-------------------")
 print("True Positives:", true_positives)
 print("False Positives:", false_positives)
 print("False Negatives:", false_negatives)
-print("Accuracy:", accuracy)
+print(f"Accuracy: {accuracy*100:.2f}%")
+
+
+# -----------------------------
+# Visualization
+# -----------------------------
+
+plt.figure(figsize=(12,6))
+
+plt.plot(data["timestamp"], data["az"], label="Vertical Acceleration (az)")
+
+for t in detected_times:
+    plt.axvline(t, alpha=0.4)
+
+plt.title("Pothole Detection Visualization")
+plt.xlabel("Time (seconds)")
+plt.ylabel("Acceleration (m/s²)")
+plt.legend()
+
+plt.show()
